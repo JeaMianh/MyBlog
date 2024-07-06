@@ -29,15 +29,10 @@ func ConnectDB() {
 	// 获取环境变量
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
-	host := os.Getenv("DB_HOST")
-	port := os.Getenv("DB_PORT")
 	dbName := os.Getenv("DB_NAME")
-	charset := os.Getenv("DB_CHARSET")
-	parseTime := os.Getenv("DB_PARSE_TIME")
-	loc := os.Getenv("DB_LOC")
 
 	// 构建 DSN
-	dsn := user + ":" + password + "@tcp(" + host + ":" + port + ")/" + dbName + "?charset=" + charset + "&parseTime=" + parseTime + "&loc=" + loc
+	dsn := user + ":" + password + "@tcp(127.0.0.1:3306)/" + dbName + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	// 下面两行是从 gorm 的文档里复制过来的，dsn 包含了连接到数据库所需的信息，一个很长的字符串。
 	// 参考 https://github.com/go-sql-driver/mysql#dsn-data-source-name 获取详情
