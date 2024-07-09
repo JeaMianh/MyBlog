@@ -4,6 +4,7 @@ import (
 	"github.com/JeaMianh/MyBlog/database"
 	"github.com/JeaMianh/MyBlog/router"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
@@ -28,6 +29,11 @@ func main() {
 	defer sqlDb.Close()
 
 	app := fiber.New()
+
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowHeaders: "Orgin, Content-Type, Accept",
+	}))
 
 	app.Use(logger.New())
 
