@@ -11,25 +11,53 @@ import (
 func BlogList(c *fiber.Ctx) error {
 
 	context := fiber.Map{
-		"statusText": "OK",
-		"message":    "Blog List",
+		"statusText": "Error",
+		"message":    "Get Blog List failed",
 	}
 
-	var records []model.Blog
+	var record_list []model.Blog
 
 	// 查询到的结果直接赋值给 records
-	result := database.DBconn.Find(&records)
+	result := database.DBconn.Find(&record_list)
 	if result.Error != nil {
 
 		// 打印后 exit(1)
 		log.Println("Error in fetching records.", result.Error)
-		context["statusText"] = "Error"
 		// 服务器请求错误
 		return c.Status(500).JSON(context)
 	}
 
-	context["blog_records"] = records
+	context["blog_records"] = record_list
+	context["statusText"] = "OK"
 
+	return c.Status(200).JSON(context)
+}
+
+func BlogFetch(c *fiber.Ctx) error {
+
+	context := fiber.Map{
+		"statusText": "Error",
+		"message":    "Fetch failed",
+	}
+
+	record := new(model.Blog)
+
+	// 获取 ID 参数
+	id := c.Params("id")
+
+	result := database.DBconn.First(record, id)
+
+	if result.Error != nil {
+		log.Println("Error in fetching records.", result.Error)
+
+		return c.Status(404).JSON(context)
+	}
+
+	context["data"] = record
+
+	context["message"] = "Fetch a Blog successfully."
+
+	context["statusText"] = "OK"
 	return c.Status(200).JSON(context)
 }
 
@@ -38,7 +66,7 @@ func BlogCreate(c *fiber.Ctx) error {
 
 	context := fiber.Map{
 		"statusText": "Error",
-		"message":    "Add Blog",
+		"message":    "Add failed",
 	}
 
 	// 返回一个指针
@@ -73,7 +101,7 @@ func BlogUpdate(c *fiber.Ctx) error {
 
 	context := fiber.Map{
 		"statusText": "Error",
-		"message":    "Update Blog",
+		"message":    "Update failed",
 	}
 
 	// 获取 ID 参数
@@ -123,7 +151,7 @@ func BlogUpdate(c *fiber.Ctx) error {
 func BlogDelete(c *fiber.Ctx) error {
 	context := fiber.Map{
 		"statusText": "Error",
-		"message":    "Delete Blog for the given ID",
+		"message":    "Delete failed",
 	}
 
 	id := c.Params("id")
